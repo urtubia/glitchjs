@@ -28,9 +28,6 @@ class GameOfLifeControl extends UI.View
           @_squareSide,
           @_squareSide)
 
-    #console.log(@_squareSide * cols + @_padding * (cols - 1))
-    #console.log(@_squareSide * rows + @_padding * (rows - 1))
-
   getCellCoordinatesAt: (x, y) =>
     rows = @_mainController._rows
     cols = @_mainController._cols
@@ -43,8 +40,8 @@ class GameOfLifeControl extends UI.View
     [-1, -1]
 
   mouseDown: (x, y, view_x, view_y) ->
-    cell_coords = this.getCellCoordinatesAt(x, y)
+    cell_coords = @getCellCoordinatesAt(x, y)
     @_gameOfLife.toggleAliveInSeed(cell_coords[0], cell_coords[1])
-    window.application.draw() # TODO: fix this, it is super ugly
+    @triggerUpdate()
 
 module.exports = GameOfLifeControl

@@ -5,12 +5,22 @@ class View
     @_hidden = false
     @_subViews = []
     @_backgroundColor = "#000000"
+    @_application = null
+    @_parentView = null
 
   addSubView: (subView) ->
+    subView._application = @_application
+    subView._parentView = @
     @_subViews.push(subView)
 
   getBounds: ->
     @_rectangle
+
+  triggerUpdate: ->
+    viewWithApplication = @
+    while viewWithApplication._application == null
+      viewWithApplication = viewWithApplication._parentView
+    viewWithApplication.draw()
 
   update: (context) ->
     context.save()

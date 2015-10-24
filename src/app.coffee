@@ -11,9 +11,6 @@ class MainController
 window.onload = ->
   canvas_div = document.getElementById "main_canvas"
   app = new UI.Application(canvas_div, 800, 600)
-  # TODO: this is a hack so that subviews can say window.application.draw()
-  #       Fix plz!
-  window.application = app
   mainController = new MainController()
   rootView = app.getRootView()
   gameOfLifePage = new GameOfLifePage(rootView.getBounds(), mainController)

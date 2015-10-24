@@ -9,6 +9,7 @@ class Application
     @_canvas_div.onmouseup = this.onMouseUp
 
     @_rootView = new View(new Rectangle(0,0,@_width, @_height))
+    @_rootView._application = @
     @_initCanvasContext()
 
   getRootView: ->
