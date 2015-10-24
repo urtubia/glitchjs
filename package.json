@@ -1,0 +1,20 @@
+{
+  "name": "GlitchJS",
+  "description": "GlitchJS",
+  "version": "0.0.1",
+  "author": "Hector Urtubia <hector@bigrobotstudios.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/urtubia/glitchjs"
+  },
+  "dependencies": {
+    "coffee-script": "*",
+    "firebase": "*",
+    "react": "^0.13.3",
+    "reflux": "^0.2.12",
+    "watchify": "*"
+  },
+  "scripts": {
+    "build": "watchify -c 'coffee -sc' src/app.coffee -o static/index.js -v"
+  }
+}
