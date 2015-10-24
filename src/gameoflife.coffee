@@ -27,7 +27,7 @@ class GameOfLife
     @_cols = cols
     @_sequencers = []
 
-    @_fbRef = new Firebase('https://glichjs.firebaseio.com/public')
+    @_fbRef = new Firebase('ADD_YOUR_OWN')
     @_seedFbRef = @_fbRef.child('seed')
     @_sequencersFbRef = @_fbRef.child('sequencers')
     @_initSeed()
