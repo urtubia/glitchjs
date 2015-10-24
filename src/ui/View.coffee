@@ -1,6 +1,4 @@
-
-class Rectangle
-  constructor: (@x, @y, @width, @height) ->
+Rectangle = require('./Rectangle.coffee')
 
 class View
   constructor: (@rectangle) ->
@@ -41,20 +39,4 @@ class View
     #context.fillStyle = @_backgroundColor
     #context.fillRect(@rectangle.x, @rectangle.y, @rectangle.width, @rectangle.height)
 
-class ArrowButton extends View
-  @LEFT: 0
-  @RIGHT: 1
-
-  constructor: (rectangle, direction) ->
-    super(rectangle)
-    #@_direction = direction
-
-  draw: (context) ->
-    context.fillStyle = "#ee0066"
-    context.fillRect(0, 0, @rectangle.width, @rectangle.height)
-    console.log "done button draw"
-
-module.exports =
-  Rectangle: Rectangle
-  View: View
-  ArrowButton: ArrowButton
+module.exports = View
