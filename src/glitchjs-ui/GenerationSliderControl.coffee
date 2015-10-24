@@ -6,8 +6,8 @@ class GenerationSliderControl extends UI.View
     @_mainController = mainController
 
   draw: (context) ->
-    width = @rectangle.width
-    height = @rectangle.height
+    width = @_rectangle.width
+    height = @_rectangle.height
     gameOfLife = @_mainController._gameOfLife
     xDelta = (width / 32.0) - 2
 

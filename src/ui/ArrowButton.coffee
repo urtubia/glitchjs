@@ -10,7 +10,7 @@ class ArrowButton extends View
 
   draw: (context) ->
     context.fillStyle = "#ee0066"
-    context.fillRect(0, 0, @rectangle.width, @rectangle.height)
+    context.fillRect(0, 0, @_rectangle.width, @_rectangle.height)
     console.log "done button draw"
 
 module.exports = ArrowButton

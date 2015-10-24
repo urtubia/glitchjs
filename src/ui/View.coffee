@@ -1,17 +1,30 @@
 Rectangle = require('./Rectangle.coffee')
 
 class View
-  constructor: (@rectangle) ->
+  constructor: (@_rectangle) ->
     @_hidden = false
     @_subViews = []
     @_backgroundColor = "#000000"
+    @_application = null
+    @_parentView = null
 
   addSubView: (subView) ->
+    subView._application = @_application
+    subView._parentView = @
     @_subViews.push(subView)
+
+  getBounds: ->
+    @_rectangle
+
+  triggerUpdate: ->
+    viewWithApplication = @
+    while viewWithApplication._application == null
+      viewWithApplication = viewWithApplication._parentView
+    viewWithApplication.draw()
 
   update: (context) ->
     context.save()
-    context.translate(@rectangle.x, @rectangle.y)
+    context.translate(@_rectangle.x, @_rectangle.y)
     this.draw(context)
     context.restore()
     for subview in @_subViews
@@ -21,19 +34,19 @@ class View
     # TODO do some sort of hit testing to stop propagating event
     for subview in @_subViews
       if not subview._hidden
-        subview.mouseDown(x - subview.rectangle.x, y - subview.rectangle.y, view_x, view_y)
+        subview.mouseDown(x - subview._rectangle.x, y - subview._rectangle.y, view_x, view_y)
 
   mouseMove: (x, y,view_x, view_y) ->
     # TODO do some sort of hit testing to stop propagating event
     for subview in @_subViews
       if not subview._hidden
-        subview.mouseMove(x - subview.rectangle.x, y - subview.rectangle.y, view_x, view_y)
+        subview.mouseMove(x - subview._rectangle.x, y - subview._rectangle.y, view_x, view_y)
 
   mouseUp: (x, y, view_x, view_y) ->
     # TODO do some sort of hit testing to stop propagating event
     for subview in @_subViews
       if not subview._hidden
-        subview.mouseUp(x - subview.rectangle.x, y - subview.rectangle.y, view_x, view_y)
+        subview.mouseUp(x - subview._rectangle.x, y - subview._rectangle.y, view_x, view_y)
 
   draw: (context) ->
     #context.fillStyle = @_backgroundColor
