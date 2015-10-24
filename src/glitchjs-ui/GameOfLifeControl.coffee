@@ -9,8 +9,8 @@ class GameOfLifeControl extends UI.View
     @_padding = 1
 
   draw: (context) ->
-    width = @rectangle.width
-    height = @rectangle.height
+    width = @_rectangle.width
+    height = @_rectangle.height
     rows = @_mainController._rows
     cols = @_mainController._cols
 

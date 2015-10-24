@@ -6,9 +6,6 @@ class RootView extends UI.View
   constructor: (rectangle, mainController) ->
     super rectangle
     @pages = []
-    @gameOfLifePage = new GameOfLifePage(rectangle, mainController)
-    @_mainController = mainController
-    this.addSubView(@gameOfLifePage)
 
 class MainController
   constructor: ->
@@ -17,19 +14,17 @@ class MainController
     @_gameOfLife = new GameOfLife(@_rows, @_cols)
 
 class Application
-  constructor: (canvas_div) ->
+  constructor: (canvas_div, @_width, @_height) ->
     @_canvas_div = canvas_div
-    @_squareSide = 20
-    @_padding = 1
     @_canvas_div.onmousedown = this.onMouseDown
     @_canvas_div.onmousemove = this.onMouseMove
     @_canvas_div.onmouseup = this.onMouseUp
 
-    @_width = 800
-    @_height = 600
+    @_rootView = new RootView(new UI.Rectangle(0,0,@_width, @_height))
+    @_initCanvasContext()
 
-    @_mainController = new MainController()
-    @_rootView = new RootView(new UI.Rectangle(0,0,@_width, @_height), @_mainController)
+  getRootView: ->
+    @_rootView
 
   onMouseDown: (evt) =>
     rect = @_canvas_div.getBoundingClientRect()
@@ -52,15 +47,10 @@ class Application
 
     @_rootView.mouseUp(x,y,x,y)
 
-
   draw: ->
     @_rootView.update(@_ctx)
 
-  tick: =>
-    @_mainController._gameOfLife.advanceGeneration()
-    @_rootView.update(@_ctx)
-
-  start: ->
+  _initCanvasContext: ->
     @_canvas = document.createElement('canvas')
     @_canvas.setAttribute('width', @_width)
     @_canvas.setAttribute('height', @_height)
@@ -68,13 +58,19 @@ class Application
     @_canvas_div.appendChild(@_canvas)
     @_ctx = @_canvas.getContext("2d")
 
-    @_tick_timeout = setInterval(@tick, 150)
-
-
 window.onload = ->
   canvas_div = document.getElementById "main_canvas"
-  app = new Application(canvas_div)
+  app = new Application(canvas_div, 800, 600)
+  # TODO: this is a hack so that subviews can say window.application.draw()
+  #       Fix plz!
   window.application = app
-  app.start()
+  mainController = new MainController()
+  rootView = app.getRootView()
+  gameOfLifePage = new GameOfLifePage(rootView.getBounds(), mainController)
+  rootView.addSubView(gameOfLifePage)
+  setInterval ->
+    mainController._gameOfLife.advanceGeneration()
+    app.draw()
+  , 150
 
 
