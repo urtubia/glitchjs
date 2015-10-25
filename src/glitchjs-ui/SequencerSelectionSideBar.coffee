@@ -5,6 +5,7 @@ class SequencerSelectionSideBar extends UI.View
     super(rectangle)
     @_mainController = mainController
     @_selectedPart = 0
+    @_colors = ['#444444','#4AC127','#923796','#E5001F','#3235AA','#BB9600','#FA750F']
 
   draw: (context) ->
     # clear first
@@ -14,7 +15,7 @@ class SequencerSelectionSideBar extends UI.View
     numParts = 7
     individualMaxHeight = @_rectangle.height / 7
     for i in [0...numParts]
-      context.fillStyle = "#000000"
+      context.fillStyle = @_colors[i]
       if @_selectedPart == i then side = 40 else side = 20
       centerPoint =
         x: (@_rectangle.width / 2)
