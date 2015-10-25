@@ -20,7 +20,7 @@ class View
     viewWithApplication = @
     while viewWithApplication._application == null
       viewWithApplication = viewWithApplication._parentView
-    viewWithApplication.draw()
+    viewWithApplication._application.draw()
 
   update: (context) ->
     context.save()
