@@ -41,7 +41,8 @@ class GameOfLifeControl extends UI.View
 
   mouseDown: (x, y, view_x, view_y) ->
     cell_coords = @getCellCoordinatesAt(x, y)
-    @_gameOfLife.toggleAliveInSeed(cell_coords[0], cell_coords[1])
-    @triggerUpdate()
+    if cell_coords[0] != -1 and cell_coords[1] != -1
+      @_gameOfLife.toggleAliveInSeed(cell_coords[0], cell_coords[1])
+      @triggerUpdate()
 
 module.exports = GameOfLifeControl
