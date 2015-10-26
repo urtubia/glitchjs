@@ -1,3 +1,4 @@
+Config = require('./Config.coffee')
 Firebase = require("firebase")
 
 NUM_SEQUENCERS = 6
@@ -13,10 +14,19 @@ class Sequencer
         cols_array.push(false)
       @_sequencerState.push(cols_array)
     @_seqFbRef.set(@_sequencerState)
+    @_listenForChanges()
 
   read: (val) ->
     for row in [0...@_rows]
       @_sequencerState.push(val[row])
+    @_listenForChanges()
+
+  _listenForChanges: ->
+    @_seqFbRef.on 'value', (snapshot) =>
+      val = snapshot.val()
+      @_sequencerState = []
+      for row in [0...@_rows]
+        @_sequencerState.push(val[row])
 
   toggleAlive: (col, row) ->
     @setAliveIn col, row, !@_sequencerState[col][row]
@@ -39,7 +49,7 @@ class GameOfLife
     @_cols = cols
     @_sequencers = []
 
-    @_fbRef = new Firebase('ADD_YOUR_OWN')
+    @_fbRef = new Firebase(Config.firebaseUrl)
     @_seedFbRef = @_fbRef.child('seed')
     @_sequencersFbRef = @_fbRef.child('sequencers')
     @_initSeed()
