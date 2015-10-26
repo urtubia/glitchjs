@@ -1,3 +1,4 @@
+Config = require('./Config.coffee')
 Firebase = require("firebase")
 
 NUM_SEQUENCERS = 6
@@ -13,10 +14,31 @@ class Sequencer
         cols_array.push(false)
       @_sequencerState.push(cols_array)
     @_seqFbRef.set(@_sequencerState)
+    @_listenForChanges()
 
   read: (val) ->
     for row in [0...@_rows]
       @_sequencerState.push(val[row])
+    @_listenForChanges()
+
+  _listenForChanges: ->
+    @_seqFbRef.on 'value', (snapshot) =>
+      val = snapshot.val()
+      @_sequencerState = []
+      for row in [0...@_rows]
+        @_sequencerState.push(val[row])
+
+  toggleAlive: (col, row) ->
+    @setAliveIn col, row, !@_sequencerState[col][row]
+
+  setAliveIn: (col, row, alive, persistValue = true) ->
+    @_sequencerState[col][row] = alive
+    if persistValue
+      fbVal = @_seqFbRef.child("/#{col}/#{row}")
+      fbVal.set alive
+
+  isCellActive: (col, row) ->
+    @_sequencerState[col][row]
 
 class GameOfLife
 
@@ -27,7 +49,7 @@ class GameOfLife
     @_cols = cols
     @_sequencers = []
 
-    @_fbRef = new Firebase('ADD_YOUR_OWN')
+    @_fbRef = new Firebase(Config.firebaseUrl)
     @_seedFbRef = @_fbRef.child('seed')
     @_sequencersFbRef = @_fbRef.child('sequencers')
     @_initSeed()
@@ -76,8 +98,6 @@ class GameOfLife
         @_seedPopulation = [] # array of rows
         for row in [0...@_rows]
           @_seedPopulation.push(val[row])
-
-
 
   resetPopulation: ->
     for row in [0...@_rows]
@@ -147,5 +167,9 @@ class GameOfLife
 
   currentGeneration: ->
     @_currentGeneration
+
+  sequencerAt: (seqIdx) ->
+    @_sequencers[seqIdx]
+
 
 module.exports = GameOfLife

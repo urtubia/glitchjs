@@ -8,6 +8,9 @@ class GameOfLifeControl extends UI.View
     @_squareSide = 20
     @_padding = 1
 
+    # TODO: Fix this non-DRY declaration
+    @_colors = ['#444444','#4AC127','#923796','#E5001F','#3235AA','#BB9600','#FA750F']
+
   draw: (context) ->
     width = @_rectangle.width
     height = @_rectangle.height
@@ -22,6 +25,11 @@ class GameOfLifeControl extends UI.View
           context.fillStyle = "#dddddd"
         else
           context.fillStyle = "#eeeeee"
+
+        for seqIdx in [0...6]
+          sequencer = @_mainController._gameOfLife.sequencerAt seqIdx
+          if sequencer?.isCellActive(col,row)
+            context.fillStyle = @_colors[seqIdx + 1]
 
         context.fillRect(@_squareSide * col + @_padding * (col - 1),
             @_squareSide * row + @_padding * (row - 1),
@@ -41,7 +49,8 @@ class GameOfLifeControl extends UI.View
 
   mouseDown: (x, y, view_x, view_y) ->
     cell_coords = @getCellCoordinatesAt(x, y)
-    @_gameOfLife.toggleAliveInSeed(cell_coords[0], cell_coords[1])
-    @triggerUpdate()
+    if cell_coords[0] != -1 and cell_coords[1] != -1
+      @_mainController.toggleCell(cell_coords[0], cell_coords[1])
+      @triggerUpdate()
 
 module.exports = GameOfLifeControl
