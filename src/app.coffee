@@ -10,7 +10,6 @@ class MainController
     @_selectedPart = 0
 
   setSelectedPart: (selectedPart) ->
-    console.log selectedPart
     @_selectedPart = selectedPart
 
   getSelectedPart: ->

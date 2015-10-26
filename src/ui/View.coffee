@@ -31,7 +31,6 @@ class View
       if not subview._hidden then subview.update(context)
 
   mouseDown: (x, y,view_x, view_y) ->
-    console.log "#{x} #{y} #{view_x} #{view_y}"
     # TODO do some sort of hit testing to stop propagating event
     for subview in @_subViews
       if not subview._hidden

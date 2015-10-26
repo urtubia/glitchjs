@@ -33,16 +33,13 @@ class SequencerSelectionSideBar extends UI.View
     selection = -1
     numParts = 7
     individualMaxHeight = @_rectangle.height / numParts
-    console.log "ind max height #{individualMaxHeight}"
     for i in [0...numParts]
       minY = i * individualMaxHeight
       maxY = (i + 1) * individualMaxHeight
       if y > minY and y < maxY
         selection = i
-        console.log "y:#{y} minY:#{minY} maxY:#{maxY} selection:#{i}   view_y:#{view_y}"
         
     if selection != -1
-      console.log "Tje sel was #{selection}"
       @_selectedPart = selection
       if @_onSelectionChangedCallback?
         @_onSelectionChangedCallback @_selectedPart
