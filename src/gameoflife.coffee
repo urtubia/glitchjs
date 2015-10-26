@@ -18,6 +18,18 @@ class Sequencer
     for row in [0...@_rows]
       @_sequencerState.push(val[row])
 
+  toggleAlive: (col, row) ->
+    @setAliveIn col, row, !@_sequencerState[col][row]
+
+  setAliveIn: (col, row, alive, persistValue = true) ->
+    @_sequencerState[col][row] = alive
+    if persistValue
+      fbVal = @_seqFbRef.child("/#{col}/#{row}")
+      fbVal.set alive
+
+  isCellActive: (col, row) ->
+    @_sequencerState[col][row]
+
 class GameOfLife
 
   constructor: (cols, rows) ->
@@ -76,8 +88,6 @@ class GameOfLife
         @_seedPopulation = [] # array of rows
         for row in [0...@_rows]
           @_seedPopulation.push(val[row])
-
-
 
   resetPopulation: ->
     for row in [0...@_rows]
@@ -147,5 +157,9 @@ class GameOfLife
 
   currentGeneration: ->
     @_currentGeneration
+
+  sequencerAt: (seqIdx) ->
+    @_sequencers[seqIdx]
+
 
 module.exports = GameOfLife

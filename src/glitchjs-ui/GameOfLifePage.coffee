@@ -20,6 +20,8 @@ class GameOfLifePage extends UI.View
 
     @_sequencerSelectionSideBar = new SequencerSelectionSideBar(new UI.Rectangle(555, 50, 50, 336), mainController)
     @addSubView(@_sequencerSelectionSideBar)
+    @_sequencerSelectionSideBar.onSelectionChanged (newSelectedPart) =>
+      @_mainController.setSelectedPart newSelectedPart
 
     @_buttonLeft = new UI.ArrowButton(new UI.Rectangle(0, 400, 70, 50), UI.ArrowButton.LEFT)
     @addSubView(@_buttonLeft)
