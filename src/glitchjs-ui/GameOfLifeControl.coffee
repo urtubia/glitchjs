@@ -28,7 +28,7 @@ class GameOfLifeControl extends UI.View
 
         for seqIdx in [0...6]
           sequencer = @_mainController._gameOfLife.sequencerAt seqIdx
-          if sequencer.isCellActive(col,row)
+          if sequencer?.isCellActive(col,row)
             context.fillStyle = @_colors[seqIdx]
 
         context.fillRect(@_squareSide * col + @_padding * (col - 1),
