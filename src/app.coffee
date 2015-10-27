@@ -6,7 +6,7 @@ class MainController
   constructor: ->
     @_cols = 26
     @_rows = 16
-    @_gameOfLife = new GameOfLife(@_rows, @_cols)
+    @_gameOfLife = new GameOfLife(@_cols, @_rows)
     # TODO this is a hack to allow the app to read the sequencer data 
     setTimeout =>
       for seqIdx in [0...6]
