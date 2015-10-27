@@ -30,16 +30,16 @@ class Sequencer
         @_sequencerState.push(val[row])
 
   toggleAlive: (col, row) ->
-    @setAliveIn col, row, !@_sequencerState[col][row]
+    @setAliveIn col, row, !@_sequencerState[row][col]
 
   setAliveIn: (col, row, alive, persistValue = true) ->
-    @_sequencerState[col][row] = alive
+    @_sequencerState[row][col] = alive
     if persistValue
-      fbVal = @_seqFbRef.child("/#{col}/#{row}")
+      fbVal = @_seqFbRef.child("/#{row}/#{col}")
       fbVal.set alive
 
   isCellActive: (col, row) ->
-    return @_sequencerState[col][row]
+    return @_sequencerState[row][col]
   
   setTriggerCallback: (callback) ->
     @_triggerCallback = callback
@@ -129,19 +129,19 @@ class GameOfLife
     liveNeighbors
 
   isCellAlive: (col, row) ->
-    @_currentPopulation[col][row]
+    @_currentPopulation[row][col]
 
   isAliveInSeed: (col, row) ->
-    @_seedPopulation[col][row]
+    @_seedPopulation[row][col]
 
   setAliveInSeed: (col, row, alive, persistValue = true) ->
-    @_seedPopulation[col][row] = alive
+    @_seedPopulation[row][col] = alive
     if persistValue
-      fbVal = @_seedFbRef.child("/#{col}/#{row}")
+      fbVal = @_seedFbRef.child("/#{row}/#{col}")
       fbVal.set alive
 
   toggleAliveInSeed: (col, row) ->
-    @setAliveInSeed col, row, !@_seedPopulation[col][row]
+    @setAliveInSeed col, row, !@_seedPopulation[row][col]
 
   advanceGeneration: =>
     if @_currentGeneration >= @_maxGenerations
@@ -166,7 +166,7 @@ class GameOfLife
           newGeneration[row].push(false)
         if originally_dead and alive_in_next_generation
           for seq in @_sequencers
-            if seq.isCellActive(row, col)
+            if seq.isCellActive(col, row)
               seq.trigger()
 
     for row in [0...@_rows]
