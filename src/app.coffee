@@ -12,7 +12,6 @@ class MainController
       for seqIdx in [0...6]
         seq = @_gameOfLife.sequencerAt seqIdx
         do (seqIdx, seq) ->
-          console.log seqIdx
           seq.setTriggerCallback () ->
             console.log "Sequencer #{seqIdx} triggered"
     , 3000
