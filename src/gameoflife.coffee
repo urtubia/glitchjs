@@ -6,7 +6,8 @@ NUM_SEQUENCERS = 6
 class Sequencer
   constructor: (@_cols, @_rows, @_seqFbRef) ->
     @_sequencerState = []
-    
+    @_triggerCallback = null
+  
   init: ->
     for row in [0...@_rows]
       cols_array = []
@@ -29,16 +30,23 @@ class Sequencer
         @_sequencerState.push(val[row])
 
   toggleAlive: (col, row) ->
-    @setAliveIn col, row, !@_sequencerState[col][row]
+    @setAliveIn col, row, !@_sequencerState[row][col]
 
   setAliveIn: (col, row, alive, persistValue = true) ->
-    @_sequencerState[col][row] = alive
+    @_sequencerState[row][col] = alive
     if persistValue
-      fbVal = @_seqFbRef.child("/#{col}/#{row}")
+      fbVal = @_seqFbRef.child("/#{row}/#{col}")
       fbVal.set alive
 
   isCellActive: (col, row) ->
-    @_sequencerState[col][row]
+    return @_sequencerState[row][col]
+  
+  setTriggerCallback: (callback) ->
+    @_triggerCallback = callback
+
+  trigger: ->
+    if @_triggerCallback
+      @_triggerCallback()
 
 class GameOfLife
 
@@ -121,19 +129,19 @@ class GameOfLife
     liveNeighbors
 
   isCellAlive: (col, row) ->
-    @_currentPopulation[col][row]
+    @_currentPopulation[row][col]
 
   isAliveInSeed: (col, row) ->
-    @_seedPopulation[col][row]
+    @_seedPopulation[row][col]
 
   setAliveInSeed: (col, row, alive, persistValue = true) ->
-    @_seedPopulation[col][row] = alive
+    @_seedPopulation[row][col] = alive
     if persistValue
-      fbVal = @_seedFbRef.child("/#{col}/#{row}")
+      fbVal = @_seedFbRef.child("/#{row}/#{col}")
       fbVal.set alive
 
   toggleAliveInSeed: (col, row) ->
-    @setAliveInSeed col, row, !@_seedPopulation[col][row]
+    @setAliveInSeed col, row, !@_seedPopulation[row][col]
 
   advanceGeneration: =>
     if @_currentGeneration >= @_maxGenerations
@@ -145,13 +153,21 @@ class GameOfLife
       newGeneration.push([])
       for col in [0...@_cols]
         live_cell = @_currentPopulation[row][col]
+        originally_dead = (not live_cell)
+        alive_in_next_generation = false
         live_neighbors = this._liveNeighbors(col,row)
         if not live_cell and live_neighbors == 3
           newGeneration[row].push(true)
+          alive_in_next_generation = true
         else if (live_cell and live_neighbors == 2) or (live_cell and live_neighbors == 3)
           newGeneration[row].push(true)
+          alive_in_next_generation = true
         else
           newGeneration[row].push(false)
+        if originally_dead and alive_in_next_generation
+          for seq in @_sequencers
+            if seq.isCellActive(col, row)
+              seq.trigger()
 
     for row in [0...@_rows]
       for col in [0...@_cols]
