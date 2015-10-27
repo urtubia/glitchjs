@@ -6,7 +6,8 @@ NUM_SEQUENCERS = 6
 class Sequencer
   constructor: (@_cols, @_rows, @_seqFbRef) ->
     @_sequencerState = []
-    
+    @_triggerCallback = null
+  
   init: ->
     for row in [0...@_rows]
       cols_array = []
@@ -38,7 +39,14 @@ class Sequencer
       fbVal.set alive
 
   isCellActive: (col, row) ->
-    @_sequencerState[col][row]
+    return @_sequencerState[col][row]
+  
+  setTriggerCallback: (callback) ->
+    @_triggerCallback = callback
+
+  trigger: ->
+    if @_triggerCallback
+      @_triggerCallback()
 
 class GameOfLife
 
@@ -145,13 +153,21 @@ class GameOfLife
       newGeneration.push([])
       for col in [0...@_cols]
         live_cell = @_currentPopulation[row][col]
+        originally_dead = (not live_cell)
+        alive_in_next_generation = false
         live_neighbors = this._liveNeighbors(col,row)
         if not live_cell and live_neighbors == 3
           newGeneration[row].push(true)
+          alive_in_next_generation = true
         else if (live_cell and live_neighbors == 2) or (live_cell and live_neighbors == 3)
           newGeneration[row].push(true)
+          alive_in_next_generation = true
         else
           newGeneration[row].push(false)
+        if originally_dead and alive_in_next_generation
+          for seq in @_sequencers
+            if seq.isCellActive(row, col)
+              seq.trigger()
 
     for row in [0...@_rows]
       for col in [0...@_cols]
