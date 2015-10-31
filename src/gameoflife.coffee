@@ -145,7 +145,7 @@ class GameOfLife
 
   advanceGeneration: =>
     if @_currentGeneration >= @_maxGenerations
-      this.resetPopulation()
+      @resetPopulation()
       return
 
     newGeneration = []
