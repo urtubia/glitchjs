@@ -1,19 +1,22 @@
 GameOfLife = require('./gameoflife.coffee')
 GameOfLifePage = require('./glitchjs-ui/GameOfLifePage.coffee')
 UI = require('./ui/UI.coffee')
+AudioController = require('./AudioController.coffee')
 
 class MainController
   constructor: ->
     @_cols = 26
     @_rows = 16
     @_gameOfLife = new GameOfLife(@_cols, @_rows)
+    @_audioController = new AudioController()
+    @_audioController.initSequencers()
     # TODO this is a hack to allow the app to read the sequencer data 
     setTimeout =>
       for seqIdx in [0...6]
         seq = @_gameOfLife.sequencerAt seqIdx
-        do (seqIdx, seq) ->
-          seq.setTriggerCallback () ->
-            console.log "Sequencer #{seqIdx} triggered"
+        do (seqIdx, seq) =>
+          seq.setTriggerCallback () =>
+            @_audioController.triggerSequencerAt seqIdx
     , 3000
 
     @_selectedPart = 0
