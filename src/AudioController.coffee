@@ -49,9 +49,8 @@ class AudioController
     for buffer in bufferList
       @_buffers.push buffer
 
-  initSequencers: ->
-
   triggerSequencerAt: (idx) ->
+    return
     if idx of @_buffers
       source = @_ac.createBufferSource()
       source.buffer = @_buffers[idx]

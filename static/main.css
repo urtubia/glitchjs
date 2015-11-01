@@ -3,13 +3,40 @@ body {
 }
 #title {
   padding-top: 30px;
-  padding-bottom: 40px;
+  /* padding-bottom: 40px; */
   padding-left: 0;
   padding-right: 0;
   margin-left: auto;
   margin-right: auto;
   display: block;
   width: 800px
+}
+
+.tab-selection-bar {
+  margin-left: auto;
+  margin-right: auto;
+  width: 800px;
+}
+
+.tab-selection-bar ul{
+  padding: 0px;
+  list-style-type: none;
+}
+
+.tab-selection-bar li{
+  background-color: lightgray;
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  display: inline;
+}
+.tab-selection-bar li a{
+  color: white;
+  text-decoration: none;
+}
+
+.tab-selection-bar .tab-selected {
+  background-color: darkgray;
 }
 
 #main_canvas {
@@ -19,4 +46,14 @@ body {
   margin-right: auto;
   display: block;
   width: 800px;
+}
+
+#sample-selection-page {
+  height: 350px;
+  width: 550px;
+  position: absolute;
+  left: 145px;
+  top: 150px;
+  background-color: lightgray;
+  display: none;
 }

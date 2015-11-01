@@ -1,40 +1,9 @@
-GameOfLife = require('./gameoflife.coffee')
-GameOfLifePage = require('./glitchjs-ui/GameOfLifePage.coffee')
+$ = require('jquery')
 UI = require('./ui/UI.coffee')
-AudioController = require('./AudioController.coffee')
+MainController = require('./MainController.coffee')
+GameOfLifePage = require('./glitchjs-ui/GameOfLifePage.coffee')
 
-class MainController
-  constructor: ->
-    @_cols = 26
-    @_rows = 16
-    @_gameOfLife = new GameOfLife(@_cols, @_rows)
-    @_audioController = new AudioController()
-    @_audioController.initSequencers()
-    # TODO this is a hack to allow the app to read the sequencer data 
-    setTimeout =>
-      for seqIdx in [0...6]
-        seq = @_gameOfLife.sequencerAt seqIdx
-        do (seqIdx, seq) =>
-          seq.setTriggerCallback () =>
-            @_audioController.triggerSequencerAt seqIdx
-    , 3000
-
-    @_selectedPart = 0
-
-  setSelectedPart: (selectedPart) ->
-    @_selectedPart = selectedPart
-
-  getSelectedPart: ->
-    @_selectedPart
-
-  toggleCell: (col, row) ->
-    if @_selectedPart == 0
-      @_gameOfLife.toggleAliveInSeed col, row
-    else
-      sequencer = @_gameOfLife.sequencerAt(@_selectedPart - 1)
-      sequencer.toggleAlive col, row
-
-window.onload = ->
+initializeCanvasAndController = ->
   canvas_div = document.getElementById "main_canvas"
   app = new UI.Application(canvas_div, 800, 600)
   mainController = new MainController()
@@ -46,4 +15,24 @@ window.onload = ->
     app.draw()
   , 150
 
+window.tabClicked = (evt) ->
+  if evt == 0
+    $('#tab-sequencer').addClass('tab-selected')
+    $('#tab-sample').removeClass('tab-selected')
+    $('#sample-selection-page').hide()
+  else if evt == 1
+    $('#tab-sequencer').removeClass('tab-selected')
+    $('#tab-sample').addClass('tab-selected')
+    $('#sample-selection-page').show()
+
+onWindowResize = ->
+    width = $(window).width()
+    console.log width
+    $('#sample-selection-page').css('left', (width - 800)/2)
+
+window.onload = ->
+  initializeCanvasAndController()
+  window.tabClicked(0)
+  $(window).resize onWindowResize
+  onWindowResize()
 

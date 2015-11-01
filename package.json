@@ -10,6 +10,7 @@
   "dependencies": {
     "coffee-script": "*",
     "firebase": "*",
+    "jquery": "^2.1.4",
     "react": "^0.13.3",
     "reflux": "^0.2.12",
     "watchify": "*"
